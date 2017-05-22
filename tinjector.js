@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class MetaData {
     constructor(childName, interfaceClass) {
         this.childName = childName;
@@ -63,7 +65,7 @@ class Registration {
         this.registeredObject = objectToRegister;
     }
 }
-export class Container {
+class Container {
     constructor() {
         this.registrations = [];
     }
@@ -101,7 +103,8 @@ export class Container {
         return Reflect.construct(resolvedRegistration.registeredObject, []);
     }
 }
-export function inject(target, key) {
+exports.Container = Container;
+function inject(target, key) {
     let types = null;
     if (key) {
         types = Reflect.getMetadata("design:paramtypes", target, key);
@@ -120,5 +123,6 @@ export function inject(target, key) {
     var typeString = types.map(a => a.name).join();
     console.log(`${key || target.name} param types: ${typeString}`);
 }
-export const container = new Container();
+exports.inject = inject;
+exports.container = new Container();
 //# sourceMappingURL=tinjector.js.map

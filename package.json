@@ -1,10 +1,12 @@
 {
   "name": "tinjector",
   "version": "0.0.1",
-  "scripts": {
-    "build": "babel src -d lib --source-maps"
+  "typescript": {
+    "definition": "tinjector.d.ts"
   },
+  "typings": "tinjector.d.ts",
   "dependencies": {
       "reflect-metadata": "0.1.10"
-  }
+  },
+  "main": "tinjector.js"
 }
