@@ -1,5 +1,14 @@
+# ignore certain configs and folders
 typings/
 typings.json
 .vscode/
 tsconfig.json
+
+# igore the map files
 **/*.map
+
+# ignore the .ts files
+*.ts
+
+# include the .d.ts files
+!*.d.ts
