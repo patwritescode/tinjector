@@ -1,3 +1,5 @@
 typings/
 typings.json
-.vscode
+.vscode/
+tsconfig.json
+**/*.map
