@@ -1,29 +1,25 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class MetaData {
-    constructor(childName: string, interfaceClass: InterfaceMetaInfo) {
+    constructor(childName, interfaceClass) {
         this.childName = childName;
         this.interfaceClass = interfaceClass;
     }
-    childName: string;
-    interfaceClass: InterfaceMetaInfo;
 }
-
+exports.MetaData = MetaData;
 class InterfaceMetaInfo {
-    constructor(name: string, required: Array<string>) {
+    constructor(name, required) {
         this.name = name;
         this.required = required;
     }
-    name: string;
-    required: Array<string>;
 }
-
+exports.InterfaceMetaInfo = InterfaceMetaInfo;
 class RuntimeInterface {
-    protected metaData: MetaData;
     constructor() {
         this.metaData = new MetaData(this.constructor.name, new InterfaceMetaInfo("RuntimeInterface", []));
         this.buildMeta([], this.metaData, this);
     }
-
-    buildMeta(instance: Array<string>, metaData: MetaData, child: object): MetaData {
+    buildMeta(instance, metaData, child) {
         const props = Object.getOwnPropertyNames(child) || [];
         // Check if next child is base Interface
         if (Reflect.getPrototypeOf(child).constructor.name === "RuntimeInterface") {
@@ -33,7 +29,7 @@ class RuntimeInterface {
                 throw `Cannot initialize interface ${metaData.childName}`;
             }
             // Check for missing interface implementations after walking the inheritance chain.
-            const mismatch: Array<string> = [];
+            const mismatch = [];
             for (const key in props) {
                 const propKey = props[key];
                 if (propKey !== "constructor") {
@@ -66,40 +62,40 @@ class RuntimeInterface {
         return metaData;
     }
 }
+exports.RuntimeInterface = RuntimeInterface;
 class Registration {
-    constructor(objectToRegister: object) {
+    constructor(objectToRegister) {
         this.registeredObject = objectToRegister;
     }
-    public registeredObject: object;
-    public registeredRTInterface: object;
-    public singletonReference: Function;
 }
-
-export class Container {
-    private registrations: Array<Registration> = [];
-    private currentRegistration: Registration;
-    register(objectToRegister: object): Container {
+class Container {
+    constructor() {
+        this.registrations = [];
+    }
+    register(objectToRegister) {
         this.currentRegistration = new Registration(objectToRegister);
         return this;
     }
-    as(rtinterface: object): Container {
-        if (!this.currentRegistration) throw `You have not registered a class yet`;
+    as(rtinterface) {
+        if (!this.currentRegistration)
+            throw `You have not registered a class yet`;
         this.currentRegistration.registeredRTInterface = rtinterface;
         return this;
     }
-    singleton(): void {
-        if (!this.currentRegistration) throw `You have not registered a class yet`;
-        this.currentRegistration.singletonReference = Reflect.construct(this.currentRegistration.registeredObject as Function, []);
+    singleton() {
+        if (!this.currentRegistration)
+            throw `You have not registered a class yet`;
+        this.currentRegistration.singletonReference = Reflect.construct(this.currentRegistration.registeredObject, []);
         this.registrations.push(this.currentRegistration);
     }
-
-    instancePerLifetimeScope(): void {
-        if (!this.currentRegistration) throw `You have not registered a class yet`;
+    instancePerLifetimeScope() {
+        if (!this.currentRegistration)
+            throw `You have not registered a class yet`;
         this.registrations.push(this.currentRegistration);
     }
-
-    resolve<T>(objToResolve: { new (): T; }): T {
-        if (!objToResolve) throw `Valid class or RuntimeInterface required.`;
+    resolve(objToResolve) {
+        if (!objToResolve)
+            throw `Valid class or RuntimeInterface required.`;
         const resolvedRegistration = this.registrations.filter(r => r.registeredObject == objToResolve || r.registeredRTInterface == objToResolve)[0];
         if (!resolvedRegistration) {
             throw `${objToResolve.name} is not registered as a class or RuntimeInterface`;
@@ -107,11 +103,11 @@ export class Container {
         else if (objToResolve == resolvedRegistration.registeredObject && resolvedRegistration.registeredRTInterface) {
             throw `You must resolve ${objToResolve.name} through its registered RuntimeInterface`;
         }
-        return Reflect.construct(resolvedRegistration.registeredObject as Function, []) as T;
+        return Reflect.construct(resolvedRegistration.registeredObject, []);
     }
 }
-
-export function inject(target: Function | any, key?: string) {
+exports.Container = Container;
+function inject(target, key) {
     let types = null;
     if (key) {
         types = Reflect.getMetadata("design:paramtypes", target, key);
@@ -120,15 +116,16 @@ export function inject(target: Function | any, key?: string) {
         types = Reflect.getMetadata("design:paramtypes", target);
         // create a new copy of the constructor with the parameters fulfilled
         // TODO: bind on types instead of just static test
-        const newConstructor: any = () => {
+        const newConstructor = () => {
             // const newObj = new target(container.resolve(IDataApi));
             // return newObj;
-        }
+        };
         newConstructor.prototype = target.prototype;
         return newConstructor;
     }
     var typeString = types.map(a => a.name).join();
     console.log(`${key || target.name} param types: ${typeString}`);
 }
-
-export const container = new Container();
+exports.inject = inject;
+exports.container = new Container();
+//# sourceMappingURL=index.js.map
