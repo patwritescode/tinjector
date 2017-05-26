@@ -4,5 +4,5 @@ export default class Registration {
     }
     public registeredObject: object;
     public registeredRTInterface: object;
-    public singletonReference: Function;
+    public singletonReference: any;
 }

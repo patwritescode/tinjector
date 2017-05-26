@@ -1,19 +1,23 @@
 import InterfaceMetaInfo from "./interfaceMetaInfo";
 import MetaData from "./metaData";
 
-export default class RuntimeInterface {
-    protected metaData: MetaData;
+export interface IRuntimeInterface {
+    metaData: MetaData;
+}
+
+export default abstract class RuntimeInterface implements IRuntimeInterface{
+    public metaData: MetaData;
     constructor() {
         this.metaData = new MetaData(this.constructor.name, new InterfaceMetaInfo("RuntimeInterface", []));
         this.buildMeta([], this.metaData, this);
     }
 
-    buildMeta(instance: Array<string>, metaData: MetaData, child: object): MetaData {
+    private buildMeta(instance: Array<string>, metaData: MetaData, child: object): MetaData {
         const props = Object.getOwnPropertyNames(child) || [];
         // Check if next child is base Interface
         if (Reflect.getPrototypeOf(child).constructor.name === "RuntimeInterface") {
             metaData.interfaceClass.name = child.constructor.name;
-            // Make sure the interface is not being explicitly created.
+            // Make sure the interface is not being explicitly created - for non-typescript use.
             if (metaData.childName == child.constructor.name) {
                 throw `Cannot initialize interface ${metaData.childName}`;
             }

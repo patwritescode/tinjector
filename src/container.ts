@@ -1,13 +1,16 @@
 import Registration from "./registration";
+import {IRuntimeInterface} from "./runtimeInterface";
 export default class Container {
     private registrations: Array<Registration> = [];
     private currentRegistration: Registration;
-    register(objectToRegister: object): Container {
+    register<T extends Function>(objectToRegister: T): Container {
+        if(!objectToRegister || typeof(objectToRegister) != "function") throw `You must pass a valid class.`;
         this.currentRegistration = new Registration(objectToRegister);
         return this;
     }
-    as(rtinterface: object): Container {
+    as(rtinterface:  { new (): IRuntimeInterface; }): Container {
         if (!this.currentRegistration) throw `You have not registered a class yet`;
+        if(!rtinterface || typeof(rtinterface) != "function") throw `You must pass a valid class.`;
         this.currentRegistration.registeredRTInterface = rtinterface;
         return this;
     }
@@ -30,6 +33,9 @@ export default class Container {
         }
         else if (objToResolve == resolvedRegistration.registeredObject && resolvedRegistration.registeredRTInterface) {
             throw `You must resolve ${objToResolve.name} through its registered RuntimeInterface`;
+        }
+        if(resolvedRegistration.singletonReference) {
+            return resolvedRegistration.singletonReference as T;
         }
         return Reflect.construct(resolvedRegistration.registeredObject as Function, []) as T;
     }
