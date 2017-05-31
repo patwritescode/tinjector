@@ -1,5 +1,4 @@
 import Registration from "./registration";
-import {IRuntimeInterface} from "./runtimeInterface";
 export default class Container {
     private registrations: Array<Registration> = [];
     private currentRegistration: Registration;
@@ -8,7 +7,7 @@ export default class Container {
         this.currentRegistration = new Registration(objectToRegister);
         return this;
     }
-    as(rtinterface:  { new (): IRuntimeInterface; }): Container {
+    as<T extends Function>(rtinterface:  T): Container {
         if (!this.currentRegistration) throw `You have not registered a class yet`;
         if(!rtinterface || typeof(rtinterface) != "function") throw `You must pass a valid class.`;
         this.currentRegistration.registeredRTInterface = rtinterface;
