@@ -7,7 +7,7 @@ export default class Container {
         this.currentRegistration = new Registration(objectToRegister);
         return this;
     }
-    as<T extends Function>(rtinterface:  T): Container {
+    as<T extends Function>(rtinterface:  { new (): any; }): Container {
         if (!this.currentRegistration) throw `You have not registered a class yet`;
         if(!rtinterface || typeof(rtinterface) != "function") throw `You must pass a valid class.`;
         this.currentRegistration.registeredRTInterface = rtinterface;
