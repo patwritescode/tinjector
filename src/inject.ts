@@ -26,7 +26,7 @@ export default function inject(target: Function | any, key?: string) {
 
         //  return Object.assign(target, container.resolve(types[0]));
         
-        return target.bind(target, container.resolve(types[0]));
+        return target.bind(target, ...types.map(type => container.resolve(type)));
     }
     var typeString = types.map(a => a.name).join();
     console.log(`${key || target.name} param types: ${typeString}`);
