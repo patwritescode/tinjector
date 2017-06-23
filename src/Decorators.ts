@@ -1,4 +1,5 @@
-import {container} from "./container";
+import {container} from "./Container";
+
 export function inject(target: Function | any, key?: string): any {
     let types = null;
     // is a prop inject

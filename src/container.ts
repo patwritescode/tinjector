@@ -1,43 +1,51 @@
-import Registration from "./registration";
-export default class Container {
+import { Registration } from "./Models";
+
+export class Container {
     private registrations: Array<Registration> = [];
-    private currentRegistration: Registration;
-    register<T extends Function>(objectToRegister: T): Container {
-        if(!objectToRegister || typeof(objectToRegister) != "function") throw `You must pass a valid class.`;
-        this.currentRegistration = new Registration(objectToRegister);
+
+    registerAbstraction<T, U extends T>(
+        abstractClass: (new (...args: any[]) => T),
+        implementedClass: { new (): U; },
+        singleton: boolean = false): Container {
+        let registration = new Registration();
+        registration.RegisteredClass = implementedClass;
+        registration.RegisteredInterface = abstractClass;
+        this.registrations.push(registration);
         return this;
     }
-    as<T extends Function>(rtinterface:  { new (): any; }): Container {
-        if (!this.currentRegistration) throw `You have not registered a class yet`;
-        if(!rtinterface || typeof(rtinterface) != "function") throw `You must pass a valid class.`;
-        this.currentRegistration.registeredRTInterface = rtinterface;
+
+    registerClass<T>(implementedClass: { new (): T }, singleton: boolean = false): Container {
+        let registration = new Registration();
+        registration.RegisteredClass = implementedClass;
+        registration.SingletonReference = singleton ? this.createInstance(implementedClass) : null;
+        this.registrations.push(registration);
         return this;
     }
-    singleton(): void {
-        if (!this.currentRegistration) throw `You have not registered a class yet`;
-        this.currentRegistration.singletonReference = Reflect.construct(this.currentRegistration.registeredObject as Function, []);
-        this.registrations.push(this.currentRegistration);
+
+    private createInstance<T>(classType: {new (): T} | Function): Function {
+        return Reflect.construct(classType, []);
     }
 
-    instancePerLifetimeScope(): void {
-        if (!this.currentRegistration) throw `You have not registered a class yet`;
-        this.registrations.push(this.currentRegistration);
-    }
-
-    resolve<T>(objToResolve: { new (): T; }): T {
-        if (!objToResolve) throw `Valid class or RuntimeInterface required.`;
-        const resolvedRegistration = this.registrations.filter(r => r.registeredObject == objToResolve || r.registeredRTInterface == objToResolve)[0];
-        if (!resolvedRegistration) {
-            throw `${objToResolve.name} is not registered as a class or RuntimeInterface`;
-        }
-        else if (objToResolve == resolvedRegistration.registeredObject && resolvedRegistration.registeredRTInterface) {
-            throw `You must resolve ${objToResolve.name} through its registered RuntimeInterface`;
-        }
-        if(resolvedRegistration.singletonReference) {
-            return resolvedRegistration.singletonReference as T;
-        }
-        return Reflect.construct(resolvedRegistration.registeredObject as Function, []) as T;
+    resolve<T extends Function>(itemToResolve: (new (...args: any[]) => T) | Function): T {
+        const resolvedRegistration = this.registrations.filter(registration => registration.RegisteredClass == itemToResolve || registration.RegisteredInterface == itemToResolve)[0];
+        return this.createInstance(resolvedRegistration.RegisteredClass) as T;
     }
 }
 
-export const container = new Container();
+export const container: Container = new Container();
+
+abstract class IPerson {
+    abstract doSomething(): void;
+}
+
+class Person implements IPerson {
+    doSomething(): void {
+        console.log("test");
+    }
+}
+
+class OtherClass {
+
+}
+
+container.registerAbstraction(OtherClass, Person);

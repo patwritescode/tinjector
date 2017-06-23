@@ -5,6 +5,11 @@
         "sourceMap": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "declaration": true
+        "declaration": true,
+        "lib": [
+            "dom",
+            "es6",
+            "es7"
+        ]
     }
 }
