@@ -33,17 +33,3 @@ export class Container {
 }
 
 export const container: Container = new Container();
-
-abstract class IService {
-    abstract doSomething(): void;
-}
-
-class Service implements IService {
-    doSomething(): void {
-        console.log("test");
-    }
-}
-
-container.registerAbstraction(IService, Service);
-var service = container.resolve(Service);
-service.doSomething
