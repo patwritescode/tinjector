@@ -4,7 +4,7 @@ typings.json
 .vscode/
 tsconfig.json
 
-# igore the map files
+# ignore the map files
 **/*.map
 
 # ignore the .ts files
