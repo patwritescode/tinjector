@@ -5,7 +5,7 @@
   "types": "./index.d.ts",
   "description": "Dependency injection and IoC container for TypeScript.",
   "bugs": {
-    "url": "https://github.com/dunnweb/tinjector/issues"
+    "url": "https://github.com/patwritescode/tinjector/issues"
   },
   "keywords": [
     "TypeScript",
@@ -18,7 +18,7 @@
   "devDependencies": {
     "@types/reflect-metadata": "0.0.5"
   },
-  "repository": "dunnweb/tinjector",
+  "repository": "patwritescode/tinjector",
   "author": {
     "name": "Patrick Dunn",
     "email": "patnpm@outlook.com",
