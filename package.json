@@ -1,13 +1,27 @@
 {
   "name": "tinjector",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "./index.js",
   "types": "./index.d.ts",
+  "description": "Dependency injection and IoC container for TypeScript.",
+  "bugs": {
+    "url": "https://github.com/dunnweb/tinjector/issues"
+  },
+  "keywords": [
+    "TypeScript",
+    "IoC",
+    "Dependency Injection"
+  ],
   "dependencies": {
     "reflect-metadata": "^0.1.10"
   },
   "devDependencies": {
     "@types/reflect-metadata": "0.0.5"
   },
-  "repository": "dunnweb/tinjector"
+  "repository": "dunnweb/tinjector",
+  "author": {
+    "name": "Patrick Dunn",
+    "email": "patnpm@outlook.com",
+    "url": "patrickdunn.blog"
+  }
 }
