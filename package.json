@@ -4,7 +4,7 @@
   "main": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "reflect-metadata": "0.1.10"
+    "reflect-metadata": "^0.1.10"
   },
   "devDependencies": {
     "@types/reflect-metadata": "0.0.5"
