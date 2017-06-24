@@ -54,3 +54,8 @@ class MyConsumer  {
 ```
 
 inject will automatically resolve the parameter types and inject the required dependencies provided they are registered properly in the IoC container.
+
+You can also resolve from the container:
+```typescript
+container.resolve(IPersonService);
+```
