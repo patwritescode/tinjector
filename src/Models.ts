@@ -1,5 +1,5 @@
 export class Registration {
-    public RegisteredClass: Function;
-    public RegisteredInterface: Function;
-    public SingletonReference: Function;
+    public RegisteredClass: object;
+    public RegisteredInterface: object;
+    public SingletonReference: object;
 }

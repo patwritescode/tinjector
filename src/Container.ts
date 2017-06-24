@@ -3,7 +3,7 @@ import { Registration } from "./Models";
 export class Container {
     private registrations: Array<Registration> = [];
 
-    private createInstance<T>(classType: {new (): T} | Function): Function {
+    private createInstance<T extends object>(classType: {new (): T} | Function): T {
         return Reflect.construct(classType, []);
     }
 
@@ -26,10 +26,24 @@ export class Container {
         return this;
     }
 
-    resolve<T extends Function>(itemToResolve: (new (...args: any[]) => T) | Function): T {
+    resolve<T>(itemToResolve: (new (...args: any[]) => T) | Function): T {
         const resolvedRegistration = this.registrations.filter(registration => registration.RegisteredClass == itemToResolve || registration.RegisteredInterface == itemToResolve)[0];
-        return this.createInstance(resolvedRegistration.RegisteredClass) as T;
+        return this.createInstance(resolvedRegistration.RegisteredClass as Function) as T;
     }
 }
 
 export const container: Container = new Container();
+
+abstract class IService {
+    abstract doSomething(): void;
+}
+
+class Service implements IService {
+    doSomething(): void {
+        console.log("test");
+    }
+}
+
+container.registerAbstraction(IService, Service);
+var service = container.resolve(Service);
+service.doSomething
